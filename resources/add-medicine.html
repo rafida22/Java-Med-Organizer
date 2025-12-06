@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Medicine - MediTrack</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --sidebar-bg: #2a2a2e;
+            --main-bg: #f4f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --accent-color: #89abcd;
+            --accent-color-light: #d0e0ef;
+            --border-color: #e5e7eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #d1d5db;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .sidebar-profile .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .sidebar-profile div h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+         .sidebar-profile div p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin: 4px 0 0 0;
+        }
+        .sidebar-nav h2 {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #a0aec0;
+            margin: 0 0 12px 0;
+            padding-left: 12px;
+        }
+        .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #d1d5db;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .sidebar-nav li a.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+        .main-header { margin-bottom: 24px; }
+        .main-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+        }
+        .form-container {
+            flex: 2;
+            max-width: 700px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+        }
+
+        /* --- UPDATED: Container for the right column --- */
+        .info-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .info-panel {
+            background-color: var(--accent-color-light);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .info-panel h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2c5282;
+        }
+        .info-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .info-panel li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .info-panel li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* --- NEW: Pro Tip Card Styles --- */
+        .pro-tip-panel {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+        }
+         .pro-tip-panel h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+        .pro-tip-panel p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-save {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-cancel {
+            background-color: #e5e7eb;
+            color: var(--text-secondary);
+        }
+        #new-person-field { display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-profile">
+            <div class="avatar" id="user-avatar">U</div>
+            <div>
+                <h2 id="username-display">Username</h2>
+                <p>Manage Your Medicines</p>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <h2>Medicine Management</h2>
+            <ul>
+                <li><a href="/dashboard" id="nav-list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    <span>Medicine List</span>
+                </a></li>
+                <li><a href="#" class="active" id="nav-add">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Add Medicine</span>
+                </a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h1 id="page-title">Add New Medicine</h1>
+        </header>
+        
+        <div class="content-wrapper">
+            <div class="form-container">
+                <form id="add-medicine-form" method="post">
+                    <input type="hidden" name="medicineId" id="medicine-id">
+                    <div class="form-group">
+                        <label for="name">Medicine Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="purpose">Purpose</label>
+                        <input type="text" id="purpose" name="purpose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dosage">Dosage</label>
+                        <input type="text" id="dosage" name="dosage" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (Optional)</label>
+                        <textarea id="notes" name="notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recommended_to_select">Recommended To</label>
+                        <select id="recommended_to_select" name="recommendedToSelect" onchange="checkNewPerson(this)" required>
+                            <option value="" disabled selected>Select an existing person or add new</option>
+                            <!-- @@PEOPLE_OPTIONS@@ -->
+                            <option value="new">-- Add New Person --</option>
+                        </select>
+                        <input type="text" id="new-person-field" name="newPersonName" placeholder="Enter new person's name">
+                    </div>
+                    <div class="btn-container">
+                        <a href="/dashboard" id="cancel-btn" class="btn btn-cancel">Cancel</a>
+                        <button type="submit" class="btn btn-save">Save Medicine</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-column">
+                <div class="info-panel">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Important Reminders
+                    </h3>
+                    <ul>
+                        <li>Always double-check the dosage information from the prescription.</li>
+                        <li>Ensure the name of the medicine is spelled correctly.</li>
+                        <li>Only add medicines prescribed by a qualified doctor.</li>
+                        <li>Keep all medications out of reach of children.</li>
+                    </ul>
+                </div>
+
+                <!-- --- NEW: Pro Tip Card --- -->
+                <div class="pro-tip-panel">
+                    <h3>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        Pro Tip
+                    </h3>
+                    <p>
+                        To stay organized, consider setting alarms on your phone for each dosage. Consistency is key to effective treatment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function checkNewPerson(selectElement) {
+            const newPersonField = document.getElementById('new-person-field');
+            if (selectElement.value === 'new') {
+                newPersonField.style.display = 'block';
+                newPersonField.required = true;
+            } else {
+                newPersonField.style.display = 'none';
+                newPersonField.required = false;
+            }
+        }
+
+        async function fetchMedicineForEdit(userId, editId) {
+             const response = await fetch(`/api/medicines/single?userId=${userId}&medicineId=${editId}`);
+             if (response.ok) {
+                const med = await response.json();
+                document.getElementById('page-title').textContent = 'Edit Medicine';
+                document.getElementById('medicine-id').value = med.id;
+                document.getElementById('name').value = med.name;
+                document.getElementById('purpose').value = med.purpose;
+                document.getElementById('dosage').value = med.dosage;
+                document.getElementById('notes').value = med.notes || '';
+                
+                const select = document.getElementById('recommended_to_select');
+                let personExists = Array.from(select.options).some(opt => opt.value === med.recommendedTo);
+                
+                if (personExists) {
+                    select.value = med.recommendedTo;
+                } else {
+                    select.value = "new";
+                    checkNewPerson(select);
+                    document.getElementById('new-person-field').value = med.recommendedTo;
+                }
+             }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const userId = params.get('userId');
+            const username = params.get('username') || 'User';
+            const editId = params.get('editId');
+
+            if (!userId) {
+                window.location.pathname = '/';
+                return;
+            }
+
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+
+            document.getElementById('nav-list').href = `/dashboard?userId=${userId}&username=${username}`;
+            document.getElementById('nav-add').href = `/add?userId=${userId}&username=${username}`;
+            document.getElementById('cancel-btn').href = `/dashboard?userId=${userId}&username=${username}`;
+            document.getElementById('add-medicine-form').action = `/add?userId=${userId}&username=${username}`;
+
+            if (editId) {
+                fetchMedicineForEdit(userId, editId);
+            }
+        });
+    </script>
+</body>
+</html>
+

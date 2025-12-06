@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MediTrack</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --sidebar-bg: #2a2a2e;
+            --main-bg: #f4f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --accent-color: #89abcd;
+            --accent-color-light: #d0e0ef;
+            --border-color: #e5e7eb;
+            --danger-color: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: #d1d5db;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .sidebar-profile .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .sidebar-profile div h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+         .sidebar-profile div p {
+            font-size: 12px;
+            color: #9ca3af;
+            margin: 4px 0 0 0;
+        }
+
+        .sidebar-nav h2 {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #a0aec0;
+            margin: 0 0 12px 0;
+            padding-left: 12px;
+        }
+        .sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #d1d5db;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .sidebar-nav li a.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .main-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .controls-bar {
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .search-bar { flex-grow: 1; position: relative; }
+        .search-bar input {
+            width: 100%;
+            padding: 10px 10px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        .search-bar .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        .filter-select {
+            min-width: 180px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        .medicine-list { display: grid; gap: 16px; }
+        .medicine-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .card-title { display: flex; align-items: center; gap: 12px; }
+        .card-title .icon {
+            color: var(--accent-color);
+            background-color: var(--accent-color-light); 
+            padding: 8px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+        }
+        .card-title h3 { margin: 0; font-size: 18px; font-weight: 600; }
+        .card-title p { margin: 4px 0 0 0; font-size: 14px; color: var(--text-secondary); }
+        
+        /* --- UPDATED: New container for tag and actions --- */
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .person-tag {
+            background-color: var(--accent-color-light);
+            color: #2c5282;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .card-body .detail-group { margin-bottom: 12px; }
+        .card-body .detail-group:last-child { margin-bottom: 0; }
+        .card-body .detail-group h4 {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0 0 4px 0;
+            text-transform: uppercase;
+        }
+        .card-body .detail-group p { margin: 0; font-size: 14px; }
+        
+        .card-actions {
+            /* No longer absolutely positioned */
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            transition: background-color 0.2s;
+        }
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+        }
+        .action-btn:hover { background-color: #f3f4f6; }
+        .action-btn.delete:hover svg { color: var(--danger-color); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-profile">
+            <div class="avatar" id="user-avatar"></div>
+            <div>
+                <h2 id="username-display"></h2>
+                <p>Manage Your Medicines</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <h2>Medicine Management</h2>
+            <ul>
+                <li><a href="#" class="active" id="nav-list">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    <span>Medicine List</span>
+                </a></li>
+                <li><a href="/add" id="nav-add">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Add Medicine</span>
+                </a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h1>Medicine List</h1>
+        </header>
+
+        <div class="controls-bar">
+            <div class="search-bar">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input type="text" id="search-input" placeholder="Search medicine by name...">
+            </div>
+            <select id="person-filter" class="filter-select">
+                <option value="All">All People</option>
+                </select>
+        </div>
+
+        <div class="medicine-list" id="medicine-list-container">
+            </div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <h2>No Medicines Found</h2>
+            <p>Try adjusting your search or add a new medicine.</p>
+        </div>
+
+    </main>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const personFilter = document.getElementById('person-filter');
+        const listContainer = document.getElementById('medicine-list-container');
+        const emptyState = document.getElementById('empty-state');
+        const navAddLink = document.getElementById('nav-add');
+        const navListLink = document.getElementById('nav-list');
+        const usernameDisplay = document.getElementById('username-display');
+        const userAvatar = document.getElementById('user-avatar');
+        
+        let userId = '0';
+        let username = 'User';
+
+        function createMedicineCard(med) {
+            const card = document.createElement('div');
+            card.className = 'medicine-card';
+            const notes = med.notes ? med.notes : 'No additional notes.';
+            
+            const editUrl = `/add?userId=${userId}&username=${username}&editId=${med.id}`;
+            
+            card.innerHTML = `<div class="card-header">
+                    <div class="card-title">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                        </div>
+                        <div>
+                            <h3>${med.name}</h3>
+                            <p>${med.dosage}</p>
+                        </div>
+                    </div>
+                    <div class="card-meta">
+                        <span class="person-tag">${med.recommendedTo}</span>
+                        <div class="card-actions">
+                            <a href="${editUrl}" class="action-btn edit" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </a>
+                            <button class="action-btn delete" onclick="deleteMedicine(${med.id}, '${med.name}')" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="detail-group">
+                        <h4>Purpose</h4>
+                        <p>${med.purpose}</p>
+                    </div>
+                    <div class="detail-group">
+                        <h4>Additional Notes</h4>
+                        <p>${notes}</p>
+                    </div>
+                </div>`;
+            return card;
+        }
+        
+        async function deleteMedicine(medicineId, medicineName) {
+            // Using a custom modal instead of confirm() for better styling would be a future improvement.
+            if (confirm(`Are you sure you want to delete "${medicineName}"?`)) {
+                await fetch(`/api/medicines/delete?userId=${userId}&medicineId=${medicineId}`, {
+                    method: 'POST' // Using POST for delete operations is common practice
+                });
+                fetchAndDisplayMedicines(); // Refresh the list
+            }
+        }
+
+        async function fetchAndDisplayMedicines() {
+            const searchQuery = searchInput.value;
+            const filterValue = personFilter.value;
+            const response = await fetch(`/api/medicines?userId=${userId}&search=${encodeURIComponent(searchQuery)}&person=${encodeURIComponent(filterValue)}`);
+            const medicines = await response.json();
+            listContainer.innerHTML = '';
+            if (medicines.length === 0) {
+                emptyState.style.display = 'block';
+                listContainer.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                listContainer.style.display = 'grid';
+                medicines.forEach(med => {
+                    const card = createMedicineCard(med);
+                    listContainer.appendChild(card);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            userId = params.get('userId');
+            username = params.get('username') || 'User';
+
+            if (!userId) {
+                window.location.pathname = '/';
+                return;
+            }
+
+            usernameDisplay.textContent = username;
+            userAvatar.textContent = username.charAt(0).toUpperCase();
+            
+            navAddLink.href = `/add?userId=${userId}&username=${username}`;
+            navListLink.href = `/dashboard?userId=${userId}&username=${username}`;
+
+            searchInput.addEventListener('input', fetchAndDisplayMedicines);
+            personFilter.addEventListener('change', fetchAndDisplayMedicines);
+            
+            fetchAndDisplayMedicines();
+        });
+    </script>
+</body>
+</html>
